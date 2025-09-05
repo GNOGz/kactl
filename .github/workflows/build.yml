@@ -1,0 +1,31 @@
+name: Build KACTL PDF
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  pdf:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install LaTeX + build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            make g++ latexmk \
+            texlive-latex-base texlive-latex-recommended texlive-latex-extra \
+            texlive-fonts-recommended texlive-science texlive-lang-european
+
+      - name: Build PDF
+        run: make kactl
+
+      - name: Upload kactl.pdf
+        uses: actions/upload-artifact@v4
+        with:
+          name: kactl-pdf
+          path: kactl.pdf
